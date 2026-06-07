@@ -200,7 +200,19 @@ function initializeGrid() {
     tile.addEventListener("click", () => openModal(item));
     tileGrid.appendChild(tile);
   });
-
+  const tile = document.createElement("div");
+  tile.className = "tile";
+  tile.innerHTML = `
+      <div class="icon-container" style="background-color: #f17961;">
+        <i data-lucide="link"></i>
+      </div>
+      <h3>App Onboarding Guide</h3>
+      <p>Access the app onboarding app here</p>
+    `;
+  tileGrid.appendChild(tile);
+  tile.addEventListener("click", () =>
+    window.open("https://evolv28.app/onboarding")
+  );
   lucide.createIcons();
 }
 
