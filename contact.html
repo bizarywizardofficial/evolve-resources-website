@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Evolv28 | Contact Us</title>
+    <link rel="stylesheet" href="style.css" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+
+    <script src="https://unpkg.com/lucide@latest"></script>
+  </head>
+  <body>
+    <div class="brand-bg"></div>
+
+    <header class="top-nav">
+      <div class="nav-container">
+        <div class="logo">Evolv28</div>
+        <a href="index.html" class="support-btn" style="text-decoration: none">
+          <i data-lucide="arrow-left" class="icon-sm"></i>
+          <span>Back to Hub</span>
+        </a>
+      </div>
+    </header>
+
+    <main class="main-content flex-center">
+      <div class="contact-card" id="formContainer">
+        <div class="contact-header">
+          <div class="icon-container-large" style="background: var(--bg-main)">
+            <i data-lucide="mail" style="color: var(--midnight)"></i>
+          </div>
+          <h2>Get in Touch</h2>
+          <p>Drop us a line and our team will get back to you shortly.</p>
+        </div>
+
+        <form
+          action="YOUR_GOOGLE_FORM_ACTION_URL_HERE"
+          method="POST"
+          target="hidden_iframe"
+          onsubmit="submitted=true;"
+          class="premium-form"
+        >
+          <div class="input-group">
+            <label for="nameField">Full Name</label>
+            <input
+              type="text"
+              id="nameField"
+              name="entry.XXXXXX"
+              placeholder="John Doe"
+              required
+            />
+          </div>
+
+          <div class="input-group">
+            <label for="emailField">Email Address</label>
+            <input
+              type="email"
+              id="emailField"
+              name="entry.YYYYYY"
+              placeholder="john@example.com"
+              required
+            />
+          </div>
+
+          <button type="submit" class="btn btn-primary submit-btn">
+            <span>Send Message</span>
+            <i data-lucide="arrow-right" class="icon-sm"></i>
+          </button>
+        </form>
+      </div>
+
+      <div
+        class="contact-card success-card"
+        id="successMessage"
+        style="display: none"
+      >
+        <div
+          class="icon-container-large"
+          style="background: var(--harmony-green)"
+        >
+          <i data-lucide="check-circle" style="color: var(--midnight)"></i>
+        </div>
+        <h2>Message Sent</h2>
+        <p>Thank you for reaching out. We have received your details.</p>
+        <button
+          onclick="window.location.reload();"
+          class="btn btn-outline"
+          style="margin-top: 1.5rem"
+        >
+          Send Another
+        </button>
+      </div>
+    </main>
+
+    <iframe
+      name="hidden_iframe"
+      id="hidden_iframe"
+      style="display: none"
+      onload="if(submitted) { showSuccess(); }"
+    ></iframe>
+
+    <script>
+      // Initialize Lucide Icons
+      lucide.createIcons();
+
+      // Logic for smooth form submission transition
+      let submitted = false;
+
+      function showSuccess() {
+        const formContainer = document.getElementById("formContainer");
+        const successMessage = document.getElementById("successMessage");
+
+        // Fade out form, fade in success message
+        formContainer.style.opacity = "0";
+        setTimeout(() => {
+          formContainer.style.display = "none";
+          successMessage.style.display = "flex";
+          // Small delay to allow display block to render before fading in
+          setTimeout(() => {
+            successMessage.style.opacity = "1";
+          }, 50);
+        }, 400); // Wait for CSS transition
+      }
+    </script>
+  </body>
+</html>
