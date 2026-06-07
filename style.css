@@ -641,3 +641,32 @@ body {
     border-radius: 24px;
   }
 }
+
+/* --- Gating Overlay Styles --- */
+
+/* Prevents the user from scrolling the background while the gate is active */
+body.gated-mode {
+  overflow: hidden;
+}
+
+.gate-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  /* Premium frosted glass over the main site */
+  background: rgba(252, 252, 252, 0.85);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  z-index: 1000; /* Extremely high to sit above navbar */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.6s;
+}
+
+.gate-backdrop .contact-card {
+  box-shadow: 0 40px 80px rgba(7, 52, 60, 0.15);
+}

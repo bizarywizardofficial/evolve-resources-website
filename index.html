@@ -15,13 +15,86 @@
 
     <script src="https://unpkg.com/lucide@latest"></script>
   </head>
-  <body>
+  <body class="gated-mode">
     <div class="brand-bg"></div>
 
+    <div class="gate-backdrop" id="gateBackdrop">
+      <div class="contact-card" id="gateFormContainer">
+        <div class="contact-header">
+          <div
+            class="icon-container-large"
+            style="background: rgba(241, 121, 97, 0.1)"
+          >
+            <i data-lucide="lock" style="color: var(--accent-primary)"></i>
+          </div>
+          <h2>Access Resource Hub</h2>
+          <p>
+            Please enter your details to view our clinical and technical
+            documentation.
+          </p>
+        </div>
+
+        <form
+          action="YOUR_GOOGLE_FORM_ACTION_URL_HERE"
+          method="POST"
+          target="hidden_gate_iframe"
+          onsubmit="gateSubmitted=true;"
+          class="premium-form"
+        >
+          <div class="input-group">
+            <label for="nameField">Full Name</label>
+            <input
+              type="text"
+              id="nameField"
+              name="entry.XXXXXX"
+              placeholder="John Doe"
+              required
+            />
+          </div>
+
+          <div class="input-group">
+            <label for="emailField">Email Address</label>
+            <input
+              type="email"
+              id="emailField"
+              name="entry.YYYYYY"
+              placeholder="john@example.com"
+              required
+            />
+          </div>
+
+          <button type="submit" class="btn btn-primary submit-btn">
+            <span>Unlock Access</span>
+            <i data-lucide="arrow-right" class="icon-sm"></i>
+          </button>
+        </form>
+      </div>
+
+      <div
+        class="contact-card success-card"
+        id="gateSuccessMessage"
+        style="display: none"
+      >
+        <div
+          class="icon-container-large"
+          style="background: rgba(120, 221, 129, 0.15)"
+        >
+          <i data-lucide="check-circle" style="color: var(--harmony-green)"></i>
+        </div>
+        <h2>Access Granted</h2>
+        <p>Thank you. Redirecting you to the Resource Hub...</p>
+      </div>
+    </div>
+
+    <iframe
+      name="hidden_gate_iframe"
+      id="hidden_gate_iframe"
+      style="display: none"
+      onload="if(typeof gateSubmitted !== 'undefined' && gateSubmitted) { unlockHub(); }"
+    ></iframe>
     <header class="top-nav">
       <div class="nav-container">
         <div class="nav-left">
-          <!-- <div class="logo">Evolv28</div> -->
           <a href="index.html" style="text-decoration: none; cursor: pointer">
             <img
               src="evolve-logo.png"
@@ -32,23 +105,16 @@
           <div class="nav-divider"></div>
           <span class="nav-subtitle">Resource Hub</span>
         </div>
-
-        <a style="text-decoration: none" href="/contact.html">
-          <button class="support-btn">
-            <i data-lucide="phone" class="icon-sm"></i>
-            <span>Contact Us</span>
-          </button>
-        </a>
       </div>
     </header>
 
     <main class="main-content">
       <div class="header-titles">
         <div class="badge-pill">Directory</div>
-        <h1>Clinical & Technical Documentation</h1>
+        <h1>Knowledge Center</h1>
         <p>
-          Select a category to access detailed guides, research, and technical
-          specifications.
+          Explore clinical evidence, product documentation, certifications, and
+          supporting resources — all in one place.
         </p>
       </div>
 
