@@ -474,18 +474,19 @@ body {
 }
 
 @media (max-width: 420px) {
-  .grid-container {
-    grid-template-columns: 1fr;
-  }
   .modal {
-    width: 100vw;
-    height: 100vh;
+    width: 100%;
+    height: 100dvh; /* Uses dynamic height to respect mobile address bars */
     border-radius: 0;
-    transform: translate(-50%, -46%);
+    top: 0;
+    left: 0;
+    transform: none;
   }
+
   .modal.active {
-    transform: translate(-50%, -50%);
+    transform: none;
   }
+
   .doc-header {
     flex-direction: column;
     align-items: flex-start;

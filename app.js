@@ -174,7 +174,23 @@ const resources = [
 ];
 
 // --- GATING LOGIC WITH LOCALSTORAGE ---
-let gateSubmitted = false;
+let gateSubmitted = false; // Intercept form submission to prevent empty space entries
+const gateForm = document.getElementById("gateForm");
+if (gateForm) {
+  gateForm.addEventListener("submit", (e) => {
+    const nameField = document.getElementById("nameField").value.trim();
+    const emailField = document.getElementById("emailField").value.trim();
+
+    if (!nameField || !emailField) {
+      e.preventDefault(); // Stop the form from submitting
+      alert("Please enter a valid name and email address.");
+      return;
+    }
+
+    // If valid, allow the submission flow to continue
+    gateSubmitted = true;
+  });
+}
 const gateBackdrop = document.getElementById("gateBackdrop");
 
 // Run this check immediately when the script loads
@@ -293,7 +309,9 @@ function openModal(item) {
           </button>
         </div>
         <div class="doc-iframe-wrapper">
-          <iframe src="${doc.link}" frameborder="0" allowfullscreen></iframe>
+          <iframe src="${
+            doc.link
+          }" loading="lazy" frameborder="0" allowfullscreen></iframe>
         </div>
       `;
 
