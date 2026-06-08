@@ -48,8 +48,8 @@ body {
   position: fixed;
   top: 0;
   left: 0;
-  width: 100vw;
-  height: 100vh;
+  width: 100%; /* Fixed horizontal scroll */
+  height: 100%;
   z-index: -1;
   background: var(--bg-main);
 }
@@ -242,9 +242,9 @@ body {
   position: fixed;
   top: 0;
   left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(7, 52, 60, 0.3); /* Very light overlay */
+  width: 100%; /* Fixed horizontal scroll */
+  height: 100%;
+  background: rgba(7, 52, 60, 0.3);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   z-index: 40;
@@ -274,6 +274,7 @@ body {
   opacity: 0;
   visibility: hidden;
   transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  overscroll-behavior: contain;
 }
 
 .modal.active {
@@ -349,6 +350,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: 4rem;
+  overscroll-behavior: contain;
 }
 
 /* Beautiful custom scrollbar for the modal */
@@ -474,9 +476,14 @@ body {
 }
 
 @media (max-width: 420px) {
+  .grid-container {
+    grid-template-columns: 1fr;
+  }
+
+  /* Pin modal to top-left and use dynamic viewport height (dvh) */
   .modal {
     width: 100%;
-    height: 100dvh; /* Uses dynamic height to respect mobile address bars */
+    height: 100dvh;
     border-radius: 0;
     top: 0;
     left: 0;
@@ -646,6 +653,7 @@ body {
 /* --- Gating Overlay Styles --- */
 
 /* Prevents the user from scrolling the background while the gate is active */
+/* --- Gating Overlay Styles --- */
 body.gated-mode {
   overflow: hidden;
 }
@@ -654,20 +662,20 @@ body.gated-mode {
   position: fixed;
   top: 0;
   left: 0;
-  width: 100vw;
-  height: 100vh;
-  /* Premium frosted glass over the main site */
+  width: 100%; /* Fixed horizontal scroll */
+  height: 100%;
   background: rgba(252, 252, 252, 0.85);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
-  z-index: 1000; /* Extremely high to sit above navbar */
+  z-index: 1000;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 2rem;
+  align-items: flex-start; /* Prevents the top from being cropped */
+  overflow-y: auto; /* Allows scrolling if the phone is very small */
+  padding: 1rem;
   transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.6s;
 }
 
 .gate-backdrop .contact-card {
+  margin: auto; /* Centers the card safely */
   box-shadow: 0 40px 80px rgba(7, 52, 60, 0.15);
 }

@@ -329,7 +329,6 @@ function openModal(item) {
 
   modalBackdrop.classList.add("active");
   documentModal.classList.add("active");
-  document.body.style.overflow = "hidden";
 }
 
 function closeModal() {
@@ -339,11 +338,6 @@ function closeModal() {
   setTimeout(() => {
     documentsContainer.innerHTML = "";
   }, 500);
-
-  // Restore scrolling only if the gate isn't active
-  if (!gateBackdrop || gateBackdrop.style.display === "none") {
-    document.body.style.overflow = "";
-  }
 }
 
 closeBtn.addEventListener("click", closeModal);
