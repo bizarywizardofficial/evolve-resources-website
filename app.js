@@ -174,24 +174,56 @@ const resources = [
 ];
 
 // --- GATING LOGIC WITH LOCALSTORAGE ---
-let gateSubmitted = false; // Intercept form submission to prevent empty space entries
+// --- GATING LOGIC WITH LOCALSTORAGE & PREMIUM VALIDATION ---
+let gateSubmitted = false;
+
 const gateForm = document.getElementById("gateForm");
+const nameField = document.getElementById("nameField");
+const emailField = document.getElementById("emailField");
+const formError = document.getElementById("formError");
+const formErrorText = document.getElementById("formErrorText");
+const gateBackdrop = document.getElementById("gateBackdrop");
+
 if (gateForm) {
   gateForm.addEventListener("submit", (e) => {
-    const nameField = document.getElementById("nameField").value.trim();
-    const emailField = document.getElementById("emailField").value.trim();
+    const nameValue = nameField.value.trim();
+    const emailValue = emailField.value.trim();
 
-    if (!nameField || !emailField) {
-      e.preventDefault(); // Stop the form from submitting
-      alert("Please enter a valid name and email address.");
+    // Reset previous errors
+    nameField.classList.remove("input-error");
+    emailField.classList.remove("input-error");
+    formError.style.display = "none";
+
+    // Check for empty space submissions
+    if (!nameValue || !emailValue) {
+      e.preventDefault(); // Stop submission
+
+      // Highlight the offending fields
+      if (!nameValue) nameField.classList.add("input-error");
+      if (!emailValue) emailField.classList.add("input-error");
+
+      // Display the custom inline error
+      formErrorText.textContent =
+        "Please provide both your name and a valid email address.";
+      formError.style.display = "flex";
+      lucide.createIcons(); // Ensure the alert icon renders
+
+      gateSubmitted = false;
       return;
     }
 
-    // If valid, allow the submission flow to continue
+    // If valid, allow the hidden iframe submission to continue
     gateSubmitted = true;
   });
+
+  // UX Polish: Clear errors the moment the user starts typing again
+  [nameField, emailField].forEach((input) => {
+    input.addEventListener("input", () => {
+      input.classList.remove("input-error");
+      formError.style.display = "none";
+    });
+  });
 }
-const gateBackdrop = document.getElementById("gateBackdrop");
 
 // Run this check immediately when the script loads
 if (localStorage.getItem("evolv28_hub_unlocked") === "true") {

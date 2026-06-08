@@ -36,7 +36,7 @@
 
         <form
           id="gateForm"
-          action="YOUR_GOOGLE_FORM_ACTION_URL_HERE"
+          action="https://docs.google.com/forms/u/0/d/e/1FAIpQLSclAu218JhLBQ1rWp59hUYzwrUnFqFB82jgVhBt5SJv9bLQ9w/formResponse"
           method="POST"
           target="hidden_gate_iframe"
           class="premium-form"
@@ -46,8 +46,8 @@
             <input
               type="text"
               id="nameField"
-              name="entry.XXXXXX"
-              placeholder="John Doe"
+              name="entry.622359431"
+              placeholder="Your name"
               required
             />
           </div>
@@ -57,10 +57,17 @@
             <input
               type="email"
               id="emailField"
-              name="entry.YYYYYY"
-              placeholder="john@example.com"
+              name="entry.17025752"
+              placeholder="Your email id"
               required
             />
+          </div>
+
+          <div id="formError" class="form-error" style="display: none">
+            <i data-lucide="alert-circle" class="icon-sm"></i>
+            <span id="formErrorText"
+              >Please fill out all fields correctly.</span
+            >
           </div>
 
           <button type="submit" class="btn btn-primary submit-btn">

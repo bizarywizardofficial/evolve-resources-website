@@ -679,3 +679,34 @@ body.gated-mode {
   margin: auto; /* Centers the card safely */
   box-shadow: 0 40px 80px rgba(7, 52, 60, 0.15);
 }
+
+/* --- Form Validation UI --- */
+.form-error {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: rgba(241, 121, 97, 0.1); /* Soft Coral Background */
+  color: var(--accent-primary);
+  padding: 0.85rem 1rem;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-top: -0.5rem;
+  animation: fadeIn 0.3s ease;
+}
+
+.input-error {
+  border-color: var(--accent-primary) !important;
+  background: #fffcfc !important; /* Extremely faint red tint */
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
