@@ -173,7 +173,6 @@ const resources = [
   },
 ];
 
-// --- GATING LOGIC WITH LOCALSTORAGE ---
 // --- GATING LOGIC WITH LOCALSTORAGE & PREMIUM VALIDATION ---
 let gateSubmitted = false;
 
@@ -235,17 +234,17 @@ if (localStorage.getItem("evolv28_hub_unlocked") === "true") {
 }
 
 function unlockHub() {
-  const gateForm = document.getElementById("gateFormContainer");
+  const gateFormContainer = document.getElementById("gateFormContainer");
   const gateSuccess = document.getElementById("gateSuccessMessage");
 
   // Step 1: Save the flag in LocalStorage so they don't have to fill it out next time
   localStorage.setItem("evolv28_hub_unlocked", "true");
 
   // Step 2: Fade out the form
-  gateForm.style.opacity = "0";
+  gateFormContainer.style.opacity = "0";
 
   setTimeout(() => {
-    gateForm.style.display = "none";
+    gateFormContainer.style.display = "none";
     gateSuccess.style.display = "flex";
 
     // Step 3: Fade in the success message
@@ -269,58 +268,86 @@ function unlockHub() {
 }
 // --- END GATING LOGIC ---
 
-const tileGrid = document.getElementById("tileGrid");
-const documentModal = document.getElementById("documentModal");
-const modalBackdrop = document.getElementById("modalBackdrop");
-const closeBtn = document.getElementById("closeBtn");
-
-const modalIcon = document.getElementById("modalIcon");
-const modalIconContainer = document.getElementById("modalIconContainer");
-const modalTitle = document.getElementById("modalTitle");
-const modalDesc = document.getElementById("modalDesc");
+// --- HUB INITIALIZATION LOGIC ---
+const categoryMenu = document.getElementById("categoryMenu");
+const categorySelect = document.getElementById("categorySelect");
+const catIconContainer = document.getElementById("catIconContainer");
+const catIcon = document.getElementById("catIcon");
+const catTitle = document.getElementById("catTitle");
+const catDesc = document.getElementById("catDesc");
 const documentsContainer = document.getElementById("documentsContainer");
 
-function initializeGrid() {
-  resources.forEach((item) => {
-    const tile = document.createElement("div");
-    tile.className = "tile";
+function initializeHub() {
+  categoryMenu.innerHTML = "";
+  categorySelect.innerHTML = "";
 
-    tile.innerHTML = `
-      <div class="icon-container" style="background-color: ${item.color};">
-        <i data-lucide="${item.icon}"></i>
-      </div>
-      <h3>${item.title}</h3>
-      <p>${item.description}</p>
-    `;
+  resources.forEach((item, index) => {
+    // 1. Build Desktop Sidebar Buttons
+    const btn = document.createElement("button");
+    btn.className = `category-btn ${index === 0 ? "active" : ""}`;
+    btn.textContent = item.title;
 
-    tile.addEventListener("click", () => openModal(item));
-    tileGrid.appendChild(tile);
+    btn.onclick = () => {
+      // Sync UI states
+      document
+        .querySelectorAll(".category-btn")
+        .forEach((b) => b.classList.remove("active"));
+      btn.classList.add("active");
+      categorySelect.value = item.id;
+
+      loadCategory(item);
+    };
+    categoryMenu.appendChild(btn);
+
+    // 2. Build Mobile Select Options
+    const opt = document.createElement("option");
+    opt.value = item.id;
+    opt.textContent = item.title;
+    categorySelect.appendChild(opt);
   });
 
-  const tile = document.createElement("div");
-  tile.className = "tile";
-  tile.innerHTML = `
-      <div class="icon-container" style="background-color: #f17961;">
-        <i data-lucide="link"></i>
-      </div>
-      <h3>App Onboarding Guide</h3>
-      <p>Access the app onboarding app here.</p>
-    `;
-  tileGrid.appendChild(tile);
-  tile.addEventListener("click", () =>
-    window.open("https://evolv28.app/onboarding")
-  );
+  // Add the External App Onboarding link to the bottom of the sidebar
+  const extBtn = document.createElement("button");
+  extBtn.className = "category-btn";
+  extBtn.style.marginTop = "1rem";
+  extBtn.style.backgroundColor = "rgba(241, 121, 97, 0.1)";
+  extBtn.style.color = "var(--coral)";
+  extBtn.style.borderColor = "transparent";
+  extBtn.innerHTML = `<span>App Onboarding</span> <i data-lucide="external-link" class="icon-sm"></i>`;
+  extBtn.onclick = () =>
+    window.open("https://evolv28.app/onboarding", "_blank");
+  categoryMenu.appendChild(extBtn);
+
+  // 3. Listen for Mobile Dropdown Changes
+  categorySelect.addEventListener("change", (e) => {
+    const selectedId = e.target.value;
+    const selectedItem = resources.find((r) => r.id === selectedId);
+
+    if (selectedItem) {
+      // Sync Desktop UI state
+      document.querySelectorAll(".category-btn").forEach((b) => {
+        b.classList.toggle("active", b.textContent === selectedItem.title);
+      });
+      loadCategory(selectedItem);
+    }
+  });
+
+  // 4. Load the first category by default on page load
+  if (resources.length > 0) {
+    loadCategory(resources[0]);
+  }
 
   lucide.createIcons();
 }
 
-function openModal(item) {
-  modalIcon.setAttribute("data-lucide", item.icon);
-  modalTitle.textContent = item.title;
-  modalDesc.textContent = item.description;
-  modalIconContainer.style.backgroundColor = item.color;
-  lucide.createIcons();
+function loadCategory(item) {
+  // Update Header UI
+  catIcon.setAttribute("data-lucide", item.icon);
+  catIconContainer.style.backgroundColor = item.color;
+  catTitle.textContent = item.title;
+  catDesc.textContent = item.description;
 
+  // Clear previous documents
   documentsContainer.innerHTML = "";
 
   if (item.documents && item.documents.length > 0) {
@@ -334,13 +361,16 @@ function openModal(item) {
             <div class="doc-number">${index + 1}</div>
             <h3>${doc.title}</h3>
           </div>
+          <!-- Temporarily hidden per client request
           <button class="btn btn-primary" onclick="window.open('${
             doc.link
           }', '_blank')">
             <i data-lucide="external-link" class="icon-sm"></i> Access Document
           </button>
+          -->
         </div>
         <div class="doc-iframe-wrapper">
+          <!-- Using Google Drive Links with Lazy Loading -->
           <iframe src="${
             doc.link
           }" loading="lazy" frameborder="0" allowfullscreen></iframe>
@@ -350,6 +380,7 @@ function openModal(item) {
       documentsContainer.appendChild(docSection);
     });
   } else {
+    // Premium Empty State
     documentsContainer.innerHTML = `
       <div style="display:flex; flex-direction:column; gap:1rem; height:300px; align-items:center; justify-content:center; font-family:'Montserrat', sans-serif; color:var(--text-muted); background:var(--bg-main); border-radius: 20px; border: 1px dashed var(--border-medium);">
         <i data-lucide="folder-open" style="width:48px; height:48px; opacity:0.5;"></i>
@@ -359,26 +390,12 @@ function openModal(item) {
 
   lucide.createIcons();
 
-  modalBackdrop.classList.add("active");
-  documentModal.classList.add("active");
+  // Smoothly scroll back to the top of the content area when switching categories
+  // const hubContent = document.getElementById("hubContent");
+  // if (hubContent) {
+  //   hubContent.scrollIntoView({ behavior: "smooth", block: "start" });
+  // }
 }
 
-function closeModal() {
-  modalBackdrop.classList.remove("active");
-  documentModal.classList.remove("active");
-
-  setTimeout(() => {
-    documentsContainer.innerHTML = "";
-  }, 500);
-}
-
-closeBtn.addEventListener("click", closeModal);
-modalBackdrop.addEventListener("click", closeModal);
-
-document.addEventListener("keydown", (e) => {
-  if (e.key === "Escape" && documentModal.classList.contains("active")) {
-    closeModal();
-  }
-});
-
-initializeGrid();
+// Start the app
+initializeHub();

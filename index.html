@@ -114,7 +114,6 @@
         </div>
       </div>
     </header>
-
     <main class="main-content">
       <div class="header-titles">
         <div class="badge-pill">Directory</div>
@@ -125,29 +124,47 @@
         </p>
       </div>
 
-      <div class="grid-container" id="tileGrid"></div>
-    </main>
-
-    <div class="modal-backdrop" id="modalBackdrop"></div>
-
-    <div class="modal" id="documentModal">
-      <div class="modal-header">
-        <div class="modal-title-group">
-          <div class="icon-container-large" id="modalIconContainer">
-            <i id="modalIcon" data-lucide="file-text"></i>
+      <!-- NEW: Two-Column Hub Layout -->
+      <div class="hub-container">
+        <!-- Left Sidebar -->
+        <aside class="hub-sidebar">
+          <!-- Mobile Dropdown (Hidden on Desktop) -->
+          <div class="mobile-dropdown-wrapper">
+            <span class="dropdown-label">BROWSE BY</span>
+            <div class="select-container">
+              <select id="categorySelect" class="premium-select"></select>
+              <i data-lucide="chevron-down" class="dropdown-icon"></i>
+            </div>
           </div>
-          <div>
-            <h2 id="modalTitle">Document Title</h2>
-            <p id="modalDesc">Document description goes here.</p>
+
+          <!-- Desktop Sidebar Menu (Hidden on Mobile) -->
+          <div class="desktop-menu-wrapper">
+            <span class="sidebar-label">BROWSE BY CATEGORY</span>
+            <nav class="category-menu" id="categoryMenu">
+              <!-- Menu buttons injected via JS -->
+            </nav>
           </div>
-        </div>
-        <button class="close-btn" id="closeBtn" aria-label="Close modal">
-          <i data-lucide="x"></i>
-        </button>
+        </aside>
+
+        <!-- Right Content Panel -->
+        <section class="hub-content" id="hubContent">
+          <div class="category-header">
+            <div class="icon-container-large" id="catIconContainer">
+              <i id="catIcon" data-lucide="file-text"></i>
+            </div>
+            <div>
+              <h2 id="catTitle">Category Title</h2>
+              <p id="catDesc">Category description goes here.</p>
+            </div>
+          </div>
+
+          <!-- Documents Feed -->
+          <div class="documents-container" id="documentsContainer">
+            <!-- PDFs injected here -->
+          </div>
+        </section>
       </div>
-
-      <div class="documents-container" id="documentsContainer"></div>
-    </div>
+    </main>
 
     <script src="app.js"></script>
   </body>
