@@ -627,10 +627,9 @@ body.gated-mode {
 
   /* Strip the container padding so children can touch the edges */
   .hub-content {
-    padding: 2rem 0;
-    border-radius: 0;
-    border-left: none;
-    border-right: none;
+    padding: 2rem 1.5rem;
+    border-radius: 24px;
+    border: 1px solid var(--border-light);
   }
 
   /* Manually add padding back to the text so it doesn't touch the screen edges */
@@ -658,11 +657,10 @@ body.gated-mode {
 
   /* The Edge-to-Edge Document Viewer */
   .doc-iframe-wrapper {
-    height: 85vh;
+    height: 70vh; /* Reduced from 85vh to allow bottom scrolling */
     min-height: 500px;
-    border-radius: 0;
-    border-left: none;
-    border-right: none;
+    border-radius: 16px; /* Brought back the rounded corners */
+    border: 1px solid var(--border-light);
     margin-top: 1.5rem;
   }
   /* Google natively hides the icon on mobile, so we don't need the mask! */
