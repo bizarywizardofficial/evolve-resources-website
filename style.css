@@ -337,18 +337,6 @@ body {
 }
 
 /* NEW: The Masking Block for the Google Drive Popout Icon */
-.doc-iframe-wrapper::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 60px;
-  height: 55px;
-  background: #151515; /* Updated to match the dark background of the Drive viewer */
-  z-index: 10;
-  pointer-events: all;
-  border-radius: 0 16px 0 0;
-}
 
 .doc-iframe-wrapper iframe {
   width: 100%;
@@ -664,9 +652,6 @@ body.gated-mode {
     margin-top: 1.5rem;
   }
   /* Google natively hides the icon on mobile, so we don't need the mask! */
-  .doc-iframe-wrapper::after {
-    display: none;
-  }
 }
 
 /* Specific Contact Card constraints for ultra-small phones */
