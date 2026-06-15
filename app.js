@@ -281,10 +281,16 @@ function initializeHub() {
   categoryMenu.innerHTML = "";
   categorySelect.innerHTML = "";
 
+  // Add a "Home" option for the mobile dropdown
+  const defaultOpt = document.createElement("option");
+  defaultOpt.value = "home";
+  defaultOpt.textContent = "Home / Overview";
+  categorySelect.appendChild(defaultOpt);
+
   resources.forEach((item, index) => {
     // 1. Build Desktop Sidebar Buttons
     const btn = document.createElement("button");
-    btn.className = `category-btn ${index === 0 ? "active" : ""}`;
+    btn.className = `category-btn`;
     btn.textContent = item.title;
 
     btn.onclick = () => {
@@ -306,25 +312,64 @@ function initializeHub() {
     categorySelect.appendChild(opt);
   });
 
-  // Add the External App Onboarding link to the bottom of the sidebar
+  // Add the External App Onboarding link
+  // Add the External App Onboarding link
   const extBtn = document.createElement("button");
-  extBtn.className = "category-btn";
+  extBtn.className = "category-btn btn-onboarding"; // Using the new CSS class
   extBtn.style.marginTop = "1rem";
-  extBtn.style.backgroundColor = "rgba(241, 121, 97, 0.1)";
-  extBtn.style.color = "var(--coral)";
-  extBtn.style.borderColor = "transparent";
   extBtn.innerHTML = `<span>App Onboarding</span> <i data-lucide="external-link" class="icon-sm"></i>`;
   extBtn.onclick = () =>
     window.open("https://evolv28.app/onboarding", "_blank");
   categoryMenu.appendChild(extBtn);
 
+  // Add the Contact Us link
+  const contactBtn = document.createElement("button");
+  contactBtn.className = "category-btn btn-contact"; // Using the new CSS class
+  extBtn.style.marginTop = "0.5rem";
+  contactBtn.innerHTML = `<span>Contact Us</span> <i data-lucide="mail" class="icon-sm"></i>`;
+  contactBtn.onclick = () => {
+    // Sync UI states
+    document
+      .querySelectorAll(".category-btn")
+      .forEach((b) => b.classList.remove("active"));
+    contactBtn.classList.add("active"); // Properly triggers the active state now!
+    categorySelect.value = "contact";
+    showContactState();
+  };
+  categoryMenu.appendChild(contactBtn);
+
+  // Add "Contact Us" to mobile dropdown
+  const contactOpt = document.createElement("option");
+  contactOpt.value = "contact";
+  contactOpt.textContent = "Contact Us";
+  categorySelect.appendChild(contactOpt);
+
   // 3. Listen for Mobile Dropdown Changes
   categorySelect.addEventListener("change", (e) => {
     const selectedId = e.target.value;
+
+    // Handle routing back to Home on mobile
+    if (selectedId === "home") {
+      document
+        .querySelectorAll(".category-btn")
+        .forEach((b) => b.classList.remove("active"));
+      showHomeState();
+      return;
+    }
+
+    // Handle routing to Contact on mobile
+    if (selectedId === "contact") {
+      document
+        .querySelectorAll(".category-btn")
+        .forEach((b) => b.classList.remove("active"));
+      contactBtn.classList.add("active"); // Ensures the desktop sidebar updates too
+      showContactState();
+      return;
+    }
+
     const selectedItem = resources.find((r) => r.id === selectedId);
 
     if (selectedItem) {
-      // Sync Desktop UI state
       document.querySelectorAll(".category-btn").forEach((b) => {
         b.classList.toggle("active", b.textContent === selectedItem.title);
       });
@@ -332,15 +377,49 @@ function initializeHub() {
     }
   });
 
-  // 4. Load the first category by default on page load
-  if (resources.length > 0) {
-    loadCategory(resources[0]);
-  }
+  // 4. Load the Home State by default on page load
+  showHomeState();
 
   lucide.createIcons();
 }
 
+function showContactState() {
+  // Hide the category header
+  const categoryHeader = document.querySelector(".category-header");
+  if (categoryHeader) categoryHeader.style.display = "none";
+
+  // Inject a neatly organized, premium contact view reusing our home-state classes
+  documentsContainer.innerHTML = `
+    <div class="home-state-container" style="min-height: 60vh;">
+      <div class="icon-container-large" style="background: rgba(241, 121, 97, 0.1); margin-bottom: 2rem;">
+        <i data-lucide="mail" style="width: 32px; height: 32px; color: var(--accent-primary);"></i>
+      </div>
+      <h1 class="home-state-title" style="font-size: 2.4rem; margin-bottom: 1rem;">
+        Start a <span class="text-coral">conversation.</span>
+      </h1>
+      <p class="home-state-desc" style="margin-bottom: 3rem; max-width: 600px;">
+        Whether you're exploring Evolv28 for research, partnership, or your own practice, we'd be glad to connect.
+      </p>
+      
+      <a href="mailto:info@aethermt.com" class="btn btn-primary" style="text-decoration: none; padding: 1rem 2rem; font-size: 1.05rem;">
+        <i data-lucide="send" class="icon-sm"></i> info@aethermt.com
+      </a>
+    </div>
+  `;
+
+  lucide.createIcons();
+
+  const hubContent = document.getElementById("hubContent");
+  if (hubContent) {
+    hubContent.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+}
+
 function loadCategory(item) {
+  // Ensure the header is visible when moving away from the Home state
+  const categoryHeader = document.querySelector(".category-header");
+  if (categoryHeader) categoryHeader.style.display = "flex";
+
   // Update Header UI
   catIcon.setAttribute("data-lucide", item.icon);
   catIconContainer.style.backgroundColor = item.color;
@@ -370,10 +449,10 @@ function loadCategory(item) {
           -->
         </div>
         <div class="doc-iframe-wrapper">
-          <!-- Using Google Drive Links with Lazy Loading -->
+          <!-- Using Google Drive Links with Lazy Loading (Hiding UI Toolbars) -->
           <iframe src="${
             doc.link
-          }" loading="lazy" frameborder="0" allowfullscreen></iframe>
+          }#toolbar=0&navpanes=0" loading="lazy" frameborder="0" allowfullscreen></iframe>
         </div>
       `;
 
@@ -396,6 +475,25 @@ function loadCategory(item) {
   //   hubContent.scrollIntoView({ behavior: "smooth", block: "start" });
   // }
 }
+function showHomeState() {
+  // Hide the category header (Icon, Title, Description)
+  const categoryHeader = document.querySelector(".category-header");
+  if (categoryHeader) categoryHeader.style.display = "none";
 
+  // Inject the clean landing page matching your image
+  documentsContainer.innerHTML = `
+    <div class="home-state-container">
+    <div class="home-hero-image">
+        <img src="images/device.gif" alt="Evolv28 Overview" />
+      </div>
+      <h1 class="home-state-title">
+        The definitive home for <span class="text-coral">Evolv28.</span>
+      </h1>
+      <p class="home-state-desc">
+       The science of a calmer mind. Evolv28 began with a single idea: that the brain can be guided gently back to rest. Here you'll find everything that idea grew into — the technology, the proof, the product, and the credentials — gathered in one place and kept current.
+      </p>
+    </div>
+  `;
+}
 // Start the app
 initializeHub();
