@@ -165,10 +165,6 @@ const resources = [
         title: "Latest Evolv28 Slides and Appendix",
         link: "https://drive.google.com/file/d/1AwESmqy9BlCiLRRuhYu0u_kI5qrua9v3/preview",
       },
-      {
-        title: "EBM Deck",
-        link: "https://drive.google.com/file/d/1xqPqTiRB1f1QIge4594GqTN_AXXD2IFe/preview",
-      },
     ],
   },
 ];
@@ -448,12 +444,12 @@ function loadCategory(item) {
           </button>
           -->
         </div>
-        <div class="doc-iframe-wrapper">
-          <!-- Using Google Drive Links with Lazy Loading (Hiding UI Toolbars) -->
-          <iframe src="${
-            doc.link
-          }#toolbar=0&navpanes=0" loading="lazy" frameborder="0" allowfullscreen></iframe>
-        </div>
+      <div class="doc-iframe-wrapper">
+  <!-- S3 Link with hidden toolbars AND forced width-fit -->
+  <iframe src="${
+    doc.link
+  }#toolbar=0&navpanes=0&view=FitH" loading="lazy" frameborder="0" allowfullscreen></iframe>
+</div>
       `;
 
       documentsContainer.appendChild(docSection);
