@@ -163,7 +163,7 @@ const resources = [
     documents: [
       {
         title: "Latest Evolv28 Slides and Appendix",
-        link: "https://drive.google.com/file/d/1AwESmqy9BlCiLRRuhYu0u_kI5qrua9v3/preview",
+        link: "https://drive.google.com/file/d/1mTd9qCzUpW7JlSsCQ3QXugDUpctaLeN2/preview",
       },
     ],
   },
