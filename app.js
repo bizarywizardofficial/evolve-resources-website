@@ -332,8 +332,7 @@ function initializeHub() {
   extBtn.className = "category-btn btn-onboarding";
   extBtn.style.marginTop = "1rem";
   extBtn.innerHTML = `<span>App Onboarding</span> <i data-lucide="external-link" class="icon-sm"></i>`;
-  extBtn.onclick = () =>
-    window.open("https://evolv28.app/onboarding", "_blank");
+  extBtn.onclick = () => window.open("onboarding.html", "_blank");
   categoryMenu.appendChild(extBtn);
 
   const contactBtn = document.createElement("button");
