@@ -5,10 +5,10 @@ import {
   ref,
   getDownloadURL,
 } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-storage.js";
-// import {
-//   initializeAppCheck,
-//   ReCaptchaEnterpriseProvider,
-// } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app-check.js";
+import {
+  initializeAppCheck,
+  ReCaptchaEnterpriseProvider,
+} from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app-check.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCkGIv1QmICoEjsOS4oZ_HfgRlQnCDcYrQ", // Ensure this is your real API key
@@ -25,19 +25,17 @@ const app = initializeApp(firebaseConfig);
 
 // Initialize App Check (IMPORTANT: You will need to generate a reCAPTCHA v3 Enterprise key in Google Cloud)
 // If you do not have the key yet, you can comment out these lines while testing.
-// const appCheck = initializeAppCheck(app, {
-//   provider: new ReCaptchaEnterpriseProvider("YOUR_RECAPTCHA_SITE_KEY_HERE"),
-//   isTokenAutoRefreshEnabled: true,
-// });
+const appCheck = initializeAppCheck(app, {
+  provider: new ReCaptchaEnterpriseProvider(
+    "6Lf1FTEtAAAAAM6se11cgpz_Na9vphFkOaYuKGqp"
+  ),
+  isTokenAutoRefreshEnabled: true,
+});
 
 // Initialize Storage
 const storage = getStorage(app);
 
 // --- 2. RESOURCE DATA (Updated to use Firebase Storage Paths) ---
-// IMPORTANT: You must update these 'storagePath' strings to match the EXACT names
-// of the files and folders you uploaded to Firebase Storage.
-// (e.g., if your folder is "Pitch Deck", it must be exactly "Pitch Deck/filename.pdf")
-
 const resources = [
   {
     id: "brochures",
@@ -95,7 +93,7 @@ const resources = [
         title: "FDA Electrical Safety",
         storagePath:
           "Certifications/FDA_Electrical_Safety_Test Report_Final .pdf",
-      }, // Note: Kept exact trailing space from your URL
+      },
       {
         title: "ISED (Canada)",
         storagePath:
@@ -150,31 +148,6 @@ const resources = [
     description:
       "Scientific explanations, pathways, and visual representations illustrating how Evolv28 works.",
     documents: [
-      { title: "MOA_1", storagePath: "Mechanism of Action (MoA)/MOA_1.pdf" },
-      {
-        title: "Chapter 1",
-        storagePath: "Mechanism of Action (MoA)/MoA Chapter 1.pdf",
-      },
-      {
-        title: "Chapter 2",
-        storagePath: "Mechanism of Action (MoA)/MoA Chapter 2.pdf",
-      },
-      {
-        title: "Chapter 3",
-        storagePath: "Mechanism of Action (MoA)/MoA Chapter 3.pdf",
-      },
-      {
-        title: "Chapter 4",
-        storagePath: "Mechanism of Action (MoA)/MoA Chapter 4.pdf",
-      },
-      {
-        title: "Chapter 5",
-        storagePath: "Mechanism of Action (MoA)/MoA Chapter 5.pdf",
-      },
-      {
-        title: "Chapter 6",
-        storagePath: "Mechanism of Action (MoA)/MoA Chapter 6.pdf",
-      },
       {
         title: "Alpha - Sleep",
         storagePath: "Mechanism of Action (MoA)/Alpha - Sleep.gif",
@@ -183,6 +156,7 @@ const resources = [
         title: "Beta - Concentration",
         storagePath: "Mechanism of Action (MoA)/Beta - Concentration.gif",
       },
+      { title: "MOA_1", storagePath: "Mechanism of Action (MoA)/MOA_1.pdf" },
     ],
   },
   {
@@ -196,21 +170,6 @@ const resources = [
       {
         title: "Evolv28 Patent",
         storagePath: "Patent/Patent EVOLV28 (US Copy online).pdf",
-      },
-    ],
-  },
-  {
-    id: "pitch-deck",
-    title: "Pitch Decks",
-    icon: "trending-up",
-    color: "var(--sky-blue)",
-    description:
-      "Company presentations, business overviews, and strategic resources.",
-    documents: [
-      {
-        title: "Latest Evolv28 Slides and Appendix",
-        storagePath:
-          "Pitch Deck/Website- Public_Evolv28 Slides and Appendix.pptx (1).pdf",
       },
     ],
   },
@@ -414,7 +373,7 @@ function showContactState() {
     hubContent.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
-// --- 5. DYNAMIC FIREBASE SECURE FETCHING ---
+// --- 5. DYNAMIC FIREBASE ACCORDION FETCHING (Lazy Load) ---
 function loadCategory(item) {
   const categoryHeader = document.querySelector(".category-header");
   if (categoryHeader) categoryHeader.style.display = "flex";
@@ -428,48 +387,75 @@ function loadCategory(item) {
 
   if (item.documents && item.documents.length > 0) {
     item.documents.forEach((doc, index) => {
-      const docSection = document.createElement("div");
-      docSection.className = "doc-section";
+      // 1. Create the Accordion Item wrapper
+      const accordionItem = document.createElement("div");
+      accordionItem.className = "accordion-item";
 
-      // Create the shell and a loading spinner UI
-      docSection.innerHTML = `
-        <div class="doc-header">
+      // 2. Build the Accordion Header and hidden Content block
+      accordionItem.innerHTML = `
+        <div class="accordion-header" id="acc-header-${item.id}-${index}">
           <div class="doc-title-wrapper">
             <div class="doc-number">${index + 1}</div>
             <h3>${doc.title}</h3>
           </div>
+          <div class="accordion-icon">
+            <i data-lucide="chevron-down"></i>
+          </div>
         </div>
-        <div class="doc-iframe-wrapper" id="iframe-wrapper-${item.id}-${index}">
-          <div style="display:flex; height:100%; width:100%; align-items:center; justify-content:center; background:var(--bg-main); color:var(--text-muted); font-family:'Montserrat', sans-serif;">
-            <i data-lucide="loader-2" class="icon-sm" style="animation: spin 2s linear infinite; margin-right: 8px;"></i>
-           Loading
+        <div class="accordion-content" id="acc-content-${item.id}-${index}">
+          <div class="accordion-content-inner">
+            <div class="doc-iframe-wrapper" id="iframe-wrapper-${
+              item.id
+            }-${index}">
+              <div style="display:flex; height:100%; width:100%; align-items:center; justify-content:center; background:var(--bg-main); color:var(--text-muted); font-family:'Montserrat', sans-serif;">
+                <i data-lucide="loader-2" class="icon-sm" style="animation: spin 2s linear infinite; margin-right: 8px;"></i>
+                Loading...
+              </div>
+            </div>
           </div>
         </div>
       `;
-      documentsContainer.appendChild(docSection);
+      documentsContainer.appendChild(accordionItem);
 
-      // Async fetch logic
+      // 3. Attach Click & Lazy Load Logic
+      const header = document.getElementById(`acc-header-${item.id}-${index}`);
+      const content = document.getElementById(
+        `acc-content-${item.id}-${index}`
+      );
       const iframeWrapper = document.getElementById(
         `iframe-wrapper-${item.id}-${index}`
       );
-      const fileRef = ref(storage, doc.storagePath);
 
-      getDownloadURL(fileRef)
-        .then((url) => {
-          // Replace loading UI with the actual iframe containing the secure token URL
-          iframeWrapper.innerHTML = `
-            <iframe src="${url}#toolbar=0&navpanes=0&view=FitH" loading="lazy" frameborder="0" allowfullscreen></iframe>
-          `;
-        })
-        .catch((error) => {
-          console.error(`Error loading ${doc.title}:`, error);
-          iframeWrapper.innerHTML = `
-            <div style="display:flex; height:100%; width:100%; align-items:center; justify-content:center; background:rgba(241, 121, 97, 0.05); color:var(--coral); font-family:'Montserrat', sans-serif;">
-              <i data-lucide="alert-circle" class="icon-sm" style="margin-right: 8px;"></i>
-              File not found. Please verify the storage path.
-            </div>
-          `;
-        });
+      let isLoaded = false;
+
+      header.addEventListener("click", () => {
+        // Toggle the visual active states
+        header.classList.toggle("active");
+        content.classList.toggle("expanded");
+        accordionItem.classList.toggle("active-item");
+
+        // If expanding and hasn't been loaded yet, fetch from Firebase!
+        if (header.classList.contains("active") && !isLoaded) {
+          const fileRef = ref(storage, doc.storagePath);
+
+          getDownloadURL(fileRef)
+            .then((url) => {
+              iframeWrapper.innerHTML = `
+                <iframe src="${url}#toolbar=0&navpanes=0&view=FitH" loading="lazy" frameborder="0" allowfullscreen></iframe>
+              `;
+              isLoaded = true;
+            })
+            .catch((error) => {
+              console.error(`Error loading ${doc.title}:`, error);
+              iframeWrapper.innerHTML = `
+                <div style="display:flex; height:100%; width:100%; align-items:center; justify-content:center; background:rgba(241, 121, 97, 0.05); color:var(--coral); font-family:'Montserrat', sans-serif;">
+                  <i data-lucide="alert-circle" class="icon-sm" style="margin-right: 8px;"></i>
+                  File not found or access denied. Please verify the storage path.
+                </div>
+              `;
+            });
+        }
+      });
     });
   } else {
     documentsContainer.innerHTML = `
